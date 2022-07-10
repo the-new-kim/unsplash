@@ -78,26 +78,41 @@ export interface PhotoData {
   errors?: string[];
 }
 
+interface ListParams {
+  page: string | number;
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) {
+  const { page } = req.query;
+
+  // console.log(page?.toString());
+
+  const searchParams = new URLSearchParams({ page: `${page}` }).toString();
+
+  console.log(searchParams.toString());
+
   const response = await fetch(
     `${
       process.env.DATABASE_URL! +
       "/?client_id=" +
       process.env.ACCESS_KEY +
-      "&per_page=30"
+      "&per_page=30&" +
+      searchParams
     }`
   );
 
   const data = await response.json();
+
+  const rateLimitRemaining = response.headers.get("X-Ratelimit-Remaining");
 
   if (!data) {
     res.status(200).json({ result: null });
   }
   res.status(200).json({
     results: data,
-    remaining: response.headers.get("X-Ratelimit-Remaining"),
+    rateLimitRemaining,
   });
 }

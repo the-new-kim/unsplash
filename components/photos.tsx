@@ -19,7 +19,7 @@ absolute top-0 left-0 w-full h-full
 flex flex-col justify-between 
 bg-gradient-to-t
 from-black/30 via-transparent to-black/30
-opacity-0
+
 
 
 hover:opacity-100
@@ -44,8 +44,6 @@ interface PhotosProps {
 }
 
 export default function Photos({ photos }: PhotosProps) {
-  const [perPage, setPerPage] = useState(30);
-
   const { width: screenWidth } = useViewportSize();
   const [rowNumber, setRowNumber] = useState(1);
 
@@ -59,12 +57,13 @@ export default function Photos({ photos }: PhotosProps) {
     } else {
       setRowNumber(1);
     }
-  }, [screenWidth, rowNumber]);
+  }, [screenWidth]);
 
   return (
     <div className="px-3 w-full flex justify-center">
-      {/* is there an way to get this with Tailwind CSS ??? ⬇⬇⬇ */}
+      {/* is there any way to get this with Tailwind CSS ??? ⬇⬇⬇ */}
       <GridCol style={{ gridTemplateColumns: `repeat(${rowNumber},1fr)` }}>
+        {/* <GridCol className={`grid-cols-${rowNumber}`}> */}
         {Array.from(Array(rowNumber)).map((_, rowIndex) => (
           <GridRow key={"girdRow" + rowIndex}>
             {photos.map(
@@ -97,6 +96,7 @@ export default function Photos({ photos }: PhotosProps) {
                             <a>↓</a>
                           </Link>
                         </Btn>
+                        <div className="p-4 bg-slate-100">{photoIndex}</div>
                       </div>
                     </Info>
                   </div>
