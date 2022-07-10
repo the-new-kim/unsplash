@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import tw from "tailwind-styled-components";
 import useViewportSize from "../libs/client/useViewportSize";
-import { ImageData } from "../pages/api/photos/list";
+import { PhotoData } from "../pages/api/photos/list";
 
 const GridCol = tw.div`
 grid gap-6
@@ -39,13 +39,13 @@ hover:text-black
 duration-300
 `;
 
-interface DataResult {
-  result: ImageData[];
+interface PhotosProps {
+  photos: PhotoData[];
 }
 
-export default function Photos() {
+export default function Photos({ photos }: PhotosProps) {
   const [perPage, setPerPage] = useState(30);
-  const [data, setData] = useState<DataResult>();
+
   const { width: screenWidth } = useViewportSize();
   const [rowNumber, setRowNumber] = useState(1);
 
@@ -61,72 +61,52 @@ export default function Photos() {
     }
   }, [screenWidth, rowNumber]);
 
-  useEffect(() => {
-    (async () => {
-      const res = await fetch("/api/photos/list");
-      const data = await res.json();
-
-      setData(data);
-    })();
-  }, []);
-
-  console.log(data);
-
-  const loading = !data;
-
   return (
     <div className="px-3 w-full flex justify-center">
-      {loading ? (
-        "loading..."
-      ) : (
-        <GridCol className={"grid-cols-" + rowNumber}>
-          {Array.from(Array(rowNumber)).map((_, rowIndex) => (
-            <GridRow key={"girdRow" + rowIndex}>
-              {data.result.map(
-                (image, imageIndex) =>
-                  imageIndex % rowNumber === rowIndex && (
-                    <div className="relative" key={image.id}>
-                      <img
-                        className="w-full"
-                        src={
-                          rowNumber === 1
-                            ? image.urls.regular
-                            : image.urls.small
-                        }
-                      />
-                      <Info>
-                        <div className="flex justify-end items-center">
-                          <Btn className="mr-2">♥</Btn>
-                          <Btn>+</Btn>
+      {/* is there an way to get this with Tailwind CSS ??? ⬇⬇⬇ */}
+      <GridCol style={{ gridTemplateColumns: `repeat(${rowNumber},1fr)` }}>
+        {Array.from(Array(rowNumber)).map((_, rowIndex) => (
+          <GridRow key={"girdRow" + rowIndex}>
+            {photos.map(
+              (photo, photoIndex) =>
+                photoIndex % rowNumber === rowIndex && (
+                  <div className="relative" key={photo.id}>
+                    <img
+                      className="w-full"
+                      src={
+                        rowNumber === 1 ? photo.urls.regular : photo.urls.small
+                      }
+                    />
+                    <Info>
+                      <div className="flex justify-end items-center">
+                        <Btn className="mr-2">♥</Btn>
+                        <Btn>+</Btn>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <div className="flex justify-start items-center">
+                          <span className="pr-2">
+                            <img
+                              className="rounded-full"
+                              src={photo.user.profile_image.small}
+                            />
+                          </span>
+                          <span className="text-white">{photo.user.name}</span>
                         </div>
-                        <div className="flex justify-between items-center">
-                          <div className="flex justify-start items-center">
-                            <span className="pr-2">
-                              <img
-                                className="rounded-full"
-                                src={image.user.profile_image.small}
-                              />
-                            </span>
-                            <span className="text-white">
-                              {image.user.name}
-                            </span>
-                          </div>
-                          <Btn>
-                            <Link href={image.links.download}>
-                              <a>↓</a>
-                            </Link>
-                          </Btn>
-                        </div>
-                      </Info>
-                    </div>
-                  )
-              )}
-            </GridRow>
-          ))}
+                        <Btn>
+                          <Link href={photo.links.download}>
+                            <a>↓</a>
+                          </Link>
+                        </Btn>
+                      </div>
+                    </Info>
+                  </div>
+                )
+            )}
+          </GridRow>
+        ))}
 
-          <div>hi</div>
-        </GridCol>
-      )}
+        <div>hi</div>
+      </GridCol>
     </div>
   );
 }

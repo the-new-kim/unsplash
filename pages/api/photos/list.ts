@@ -1,14 +1,14 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 
-export interface ImageLinks {
+export interface PhotoLinks {
   download: string;
   download_location: string;
   html: string;
   self: string;
 }
 
-export interface ImageUrl {
+export interface PhotoUrl {
   full: string;
   raw: string;
   regular: string;
@@ -62,17 +62,17 @@ export interface UserData {
   username: string;
 }
 
-export interface ImageData {
+export interface PhotoData {
   blur_hash: string;
   color: string;
   created_at: string;
   height: 6000;
   id: string;
   likes: 4;
-  links: ImageLinks;
+  links: PhotoLinks;
   promoted_at: string;
   updated_at: string;
-  urls: ImageUrl;
+  urls: PhotoUrl;
   user: UserData;
   width: number;
   errors?: string[];
@@ -97,7 +97,7 @@ export default async function handler(
     res.status(200).json({ result: null });
   }
   res.status(200).json({
-    result: data,
+    results: data,
     remaining: response.headers.get("X-Ratelimit-Remaining"),
   });
 }
