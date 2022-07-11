@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 interface SearchForm {
@@ -7,9 +8,8 @@ interface SearchForm {
 }
 
 export default function Banner() {
-  //   const { isLoading, error, result } = randomData;
+  const [bannerUrl, setBannerUrl] = useState("");
   const router = useRouter();
-
   const { register, handleSubmit, setValue } = useForm<SearchForm>();
 
   const onValid = ({ keyword }: SearchForm) => {
@@ -18,8 +18,19 @@ export default function Banner() {
     setValue("keyword", "");
   };
 
+  useEffect(() => {
+    (async () => {
+      const res = await fetch("https://source.unsplash.com/random");
+
+      setBannerUrl(res.url);
+    })();
+  }, []);
+
   return (
     <div
+      style={{
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.2),rgba(0, 0, 0, 0.7)), url(${bannerUrl})`,
+      }}
       className="relative
     w-full h-80 sm:h-[594px] mb-12 bg-cover bg-center
     flex justify-center items-center"
