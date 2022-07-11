@@ -78,13 +78,15 @@ export interface PhotoData {
   errors?: string[];
 }
 
-interface ListParams {
-  page: string | number;
+export interface DataResults {
+  results: PhotoData[];
+  isLoading: boolean;
+  error: boolean;
 }
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<any>
+  res: NextApiResponse<DataResults>
 ) {
   const { page } = req.query;
 
@@ -92,7 +94,7 @@ export default async function handler(
 
   const searchParams = new URLSearchParams({ page: `${page}` }).toString();
 
-  console.log(searchParams.toString());
+  // console.log(searchParams.toString());
 
   const response = await fetch(
     `${
@@ -107,12 +109,14 @@ export default async function handler(
   const data = await response.json();
 
   const rateLimitRemaining = response.headers.get("X-Ratelimit-Remaining");
+  console.log(rateLimitRemaining);
 
   if (!data) {
-    res.status(200).json({ result: null });
+    res.status(200).json({ results: [], isLoading: false, error: true });
   }
   res.status(200).json({
     results: data,
-    rateLimitRemaining,
+    isLoading: false,
+    error: false,
   });
 }

@@ -1,8 +1,15 @@
-import Link from "next/link";
-import { useEffect, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import tw from "tailwind-styled-components";
 import useViewportSize from "../libs/client/useViewportSize";
 import { PhotoData } from "../pages/api/photos/list";
+import Photo from "./photo";
 
 const GridCol = tw.div`
 grid gap-6
@@ -14,38 +21,25 @@ const GridRow = tw.div`
 grid grid-cols-1 gap-6 h-fit
 `;
 
-const Info = tw.div`
-absolute top-0 left-0 w-full h-full 
-flex flex-col justify-between 
-bg-gradient-to-t
-from-black/30 via-transparent to-black/30
-
-
-
-hover:opacity-100
-duration-300
-
-[&>div]:w-full [&>div]:p-5
-`;
-
-const Btn = tw.button`
-bg-[#FFFFFF]
-h-8
-px-3
-rounded-md
-text-[#767676]
-
-hover:text-black
-duration-300
-`;
-
 interface PhotosProps {
   photos: PhotoData[];
+  setPage: Dispatch<SetStateAction<number>>;
 }
 
-export default function Photos({ photos }: PhotosProps) {
+export default function Photos({ photos, setPage }: PhotosProps) {
   const { width: screenWidth } = useViewportSize();
   const [rowNumber, setRowNumber] = useState(1);
+
+  const observer = useRef<IntersectionObserver>();
+
+  const lastPhotoElement = useCallback((node: HTMLDivElement) => {
+    if (!node) return;
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) setPage((prev) => prev + 1);
+    });
+    observer.current.observe(node);
+  }, []);
 
   useEffect(() => {
     if (!screenWidth) return;
@@ -66,42 +60,30 @@ export default function Photos({ photos }: PhotosProps) {
         {/* <GridCol className={`grid-cols-${rowNumber}`}> */}
         {Array.from(Array(rowNumber)).map((_, rowIndex) => (
           <GridRow key={"girdRow" + rowIndex}>
-            {photos.map(
-              (photo, photoIndex) =>
-                photoIndex % rowNumber === rowIndex && (
-                  <div className="relative" key={photo.id}>
-                    <img
-                      className="w-full"
-                      src={
-                        rowNumber === 1 ? photo.urls.regular : photo.urls.small
-                      }
+            {photos.map((photo, photoIndex) => {
+              if (photoIndex % rowNumber === rowIndex) {
+                if (photoIndex === photos.length - 1) {
+                  return (
+                    <Photo
+                      ref={lastPhotoElement}
+                      key={photo.id}
+                      photo={photo}
+                      photoIndex={photoIndex}
+                      rowNumber={rowNumber}
                     />
-                    <Info>
-                      <div className="flex justify-end items-center">
-                        <Btn className="mr-2">♥</Btn>
-                        <Btn>+</Btn>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <div className="flex justify-start items-center">
-                          <span className="pr-2">
-                            <img
-                              className="rounded-full"
-                              src={photo.user.profile_image.small}
-                            />
-                          </span>
-                          <span className="text-white">{photo.user.name}</span>
-                        </div>
-                        <Btn>
-                          <Link href={photo.links.download}>
-                            <a>↓</a>
-                          </Link>
-                        </Btn>
-                        <div className="p-4 bg-slate-100">{photoIndex}</div>
-                      </div>
-                    </Info>
-                  </div>
-                )
-            )}
+                  );
+                } else {
+                  return (
+                    <Photo
+                      key={photo.id}
+                      photo={photo}
+                      photoIndex={photoIndex}
+                      rowNumber={rowNumber}
+                    />
+                  );
+                }
+              }
+            })}
           </GridRow>
         ))}
 
