@@ -1,22 +1,24 @@
 import type { NextPage } from "next";
 import { useEffect, useState } from "react";
+import Banner from "../components/banner";
 import Photos from "../components/photos";
-import { DataResults, PhotoData } from "./api/photos/list";
+import { ListResult, PhotoData } from "./api/photos/list";
 
 const Home: NextPage = () => {
   const [photos, setPhotos] = useState<PhotoData[]>([]);
   const [page, setPage] = useState(1);
-  const [data, setData] = useState<DataResults>({
+  const [listData, setListData] = useState<ListResult>({
     results: [],
     error: false,
     isLoading: true,
   });
+
   useEffect(() => {
     (async () => {
       const res = await fetch(`/api/photos/list?page=${page}`);
-      const data: DataResults = await res.json();
+      const data: ListResult = await res.json();
       // console.log("data fetched", data);
-      setData(data);
+      setListData(data);
 
       setPhotos((prev) => {
         return [...prev, ...data.results];
@@ -26,8 +28,12 @@ const Home: NextPage = () => {
 
   return (
     <>
-      {data.isLoading ? (
+      <Banner />
+
+      {listData.isLoading ? (
         "loading"
+      ) : listData.error ? (
+        "error"
       ) : (
         <Photos photos={photos} setPage={setPage} />
       )}

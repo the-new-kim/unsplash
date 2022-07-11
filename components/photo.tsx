@@ -8,7 +8,7 @@ absolute top-0 left-0 w-full h-full
 flex flex-col justify-between 
 bg-gradient-to-t
 from-black/30 via-transparent to-black/30
-
+opacity-0
 
 
 hover:opacity-100
@@ -62,7 +62,6 @@ function Photo(props: PhotoProps, ref: ForwardedRef<HTMLDivElement>) {
               <a>↓</a>
             </Link>
           </Btn>
-          <div className="p-4 bg-slate-100">{photoIndex}</div>
         </div>
       </Info>
     </div>

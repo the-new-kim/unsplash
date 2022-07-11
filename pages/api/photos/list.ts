@@ -1,14 +1,14 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 
-export interface PhotoLinks {
+interface PhotoLinks {
   download: string;
   download_location: string;
   html: string;
   self: string;
 }
 
-export interface PhotoUrl {
+export interface PhotoUrls {
   full: string;
   raw: string;
   regular: string;
@@ -40,7 +40,7 @@ interface UserLinks {
   self: string;
 }
 
-export interface UserData {
+interface UserData {
   accepted_tos: boolean;
   bio: string;
   first_name: string;
@@ -72,13 +72,13 @@ export interface PhotoData {
   links: PhotoLinks;
   promoted_at: string;
   updated_at: string;
-  urls: PhotoUrl;
+  urls: PhotoUrls;
   user: UserData;
   width: number;
   errors?: string[];
 }
 
-export interface DataResults {
+export interface ListResult {
   results: PhotoData[];
   isLoading: boolean;
   error: boolean;
@@ -86,7 +86,7 @@ export interface DataResults {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<DataResults>
+  res: NextApiResponse<ListResult>
 ) {
   const { page } = req.query;
 
@@ -99,7 +99,7 @@ export default async function handler(
   const response = await fetch(
     `${
       process.env.DATABASE_URL! +
-      "/?client_id=" +
+      "photos/?client_id=" +
       process.env.ACCESS_KEY +
       "&per_page=30&" +
       searchParams
