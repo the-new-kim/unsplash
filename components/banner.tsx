@@ -13,7 +13,6 @@ export default function Banner() {
   const { register, handleSubmit, setValue } = useForm<SearchForm>();
 
   const onValid = ({ keyword }: SearchForm) => {
-    console.log(keyword);
     router.push(`/search?keyword=${keyword}`);
     setValue("keyword", "");
   };

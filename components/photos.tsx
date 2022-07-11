@@ -54,7 +54,7 @@ export default function Photos({ photos, setPage }: PhotosProps) {
   }, [screenWidth]);
 
   return (
-    <div className="px-3 w-full flex justify-center">
+    <div className="sm:px-3 w-full flex justify-center">
       {/* is there any way to get this with Tailwind CSS ??? ⬇⬇⬇ */}
       <GridCol style={{ gridTemplateColumns: `repeat(${rowNumber},1fr)` }}>
         {/* <GridCol className={`grid-cols-${rowNumber}`}> */}

@@ -13,13 +13,12 @@ export default function NavBar() {
   const { register, handleSubmit, setValue } = useForm<SearchForm>();
 
   const onValid = ({ keyword }: SearchForm) => {
-    console.log(keyword);
     router.push(`/search?keyword=${keyword}`);
     setValue("keyword", "");
   };
 
   return (
-    <nav className="bg-white fixed w-screen px-5 h-16 flex justify-between items-center z-50">
+    <nav className="bg-white sm:fixed w-screen px-5 h-16 flex justify-between items-center z-10">
       <Link href="/">
         <a>
           <svg
@@ -36,7 +35,7 @@ export default function NavBar() {
         </a>
       </Link>
       <div className="px-6 w-full">
-        <div className="relative w-full hidden sm:flex">
+        <div className="relative w-full flex">
           <form className="w-full" onSubmit={handleSubmit(onValid)}>
             <input
               className="bg-[#F5F5F5] py-3 px-12 rounded-3xl w-full text-black outline-none text-sm"

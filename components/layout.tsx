@@ -10,7 +10,7 @@ export default function Layout({ children }: PropsWithChildren) {
         <meta name="description" content="Portfolio" />
       </Head>
       <NavBar />
-      <main className="w-screen pt-16">{children}</main>
+      <main className="relative w-screen sm:pt-16">{children}</main>
     </>
   );
 }

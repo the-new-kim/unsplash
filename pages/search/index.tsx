@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import Detail from "../../components/detail";
 import Photos from "../../components/photos";
 import { ListResult, PhotoData } from "../api/photos/list";
 
@@ -23,7 +24,6 @@ const Search: NextPage = () => {
       const data: ListResult = await res.json();
       // console.log("data fetched", data);
       setListData(data);
-      console.log(data);
 
       setPhotos((prev) => {
         return [...prev, ...data.results];
@@ -42,6 +42,7 @@ const Search: NextPage = () => {
       ) : (
         <Photos photos={photos} setPage={setPage} />
       )}
+      {router.query.photoId && <Detail photoId={router.query.photoId + ""} />}
     </>
   );
 };
