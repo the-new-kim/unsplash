@@ -71,7 +71,7 @@ function Photo(props: PhotoProps, ref: ForwardedRef<HTMLDivElement>) {
         <span>{photo.user.name}</span>
       </MobileInfo>
       <Link
-        href={`?photoId=${photo.id}`}
+        href={rowNumber !== 1 ? `?photoId=${photo.id}` : `/photo/${photo.id}`}
         as={`/photo/${photo.id}`}
         scroll={false}
       >

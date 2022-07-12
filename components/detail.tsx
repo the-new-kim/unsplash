@@ -4,6 +4,8 @@ import { DetailData, DetailResult } from "../pages/api/photos/detail";
 import tw from "tailwind-styled-components";
 import Link from "next/link";
 import Image from "next/image";
+import { PhotoData } from "../pages/api/photos/list";
+import Photos from "./photos";
 
 const Btn = tw.button`
 bg-[#FFFFFF]
@@ -30,6 +32,7 @@ export default function Detail() {
   const router = useRouter();
   const { photoId } = router.query;
   const [photo, setPhoto] = useState<DetailData>();
+  const [photos, setPhotos] = useState<PhotoData[]>();
 
   useEffect(() => {
     (async () => {
@@ -42,6 +45,18 @@ export default function Detail() {
       setPhoto(data.results);
     })();
   }, [photoId]);
+
+  useEffect(() => {
+    if (!photo) return;
+    setPhotos(() => {
+      let photos: any = [];
+      photo.related_collections.results.map((result) =>
+        photos.push(result.cover_photo)
+      );
+
+      return photos;
+    });
+  }, [photo]);
 
   return (
     <>
@@ -100,7 +115,8 @@ export default function Detail() {
               <span>{photo.exif.make + " " + photo.exif.model}</span>
             </div>
           </div>
-          <div>{/* <img/> */}</div>
+          <h2 className="text-2xl mt-7">Related Photos</h2>
+          {photos && <Photos photos={photos} />}
         </div>
       )}
     </>

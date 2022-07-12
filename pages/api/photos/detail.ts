@@ -1,5 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
+import { PhotoData } from "./list";
 
 export interface DetailData {
   errors?: string[];
@@ -77,6 +78,12 @@ export interface DetailData {
     };
   };
   views: number;
+  related_collections: {
+    results: {
+      id: string;
+      cover_photo: PhotoData;
+    }[];
+  };
 }
 
 export interface DetailResult {

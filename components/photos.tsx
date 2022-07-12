@@ -86,8 +86,6 @@ export default function Photos({ photos, setPage }: PhotosProps) {
             })}
           </GridRow>
         ))}
-
-        <div>hi</div>
       </GridCol>
     </div>
   );

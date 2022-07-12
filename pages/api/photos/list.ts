@@ -104,8 +104,8 @@ export default async function handler(
 
   const data = await response.json();
 
-  const rateLimitRemaining = response.headers.get("X-Ratelimit-Remaining");
-  console.log(rateLimitRemaining);
+  // const rateLimitRemaining = response.headers.get("X-Ratelimit-Remaining");
+  // console.log(rateLimitRemaining);
 
   if (!data) {
     res.status(200).json({ results: [], isLoading: false, error: true });
