@@ -1,7 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 
-interface DetailData {
+export interface DetailData {
+  errors?: string[];
   id: "Dwu85P9SOIk";
 
   color: "#6E633A";
@@ -59,6 +60,11 @@ interface DetailData {
     portfolio_url: string;
     bio: string;
     location: string;
+    profile_image: {
+      small: string;
+      medium: string;
+      large: string;
+    };
     total_likes: number;
     total_photos: number;
     total_collections: number;
@@ -70,6 +76,7 @@ interface DetailData {
       portfolio: string;
     };
   };
+  views: number;
 }
 
 export interface DetailResult {
@@ -84,15 +91,11 @@ export default async function handler(
 ) {
   const { id } = req.query;
 
-  const searchParams = new URLSearchParams({
-    id: `${id}`,
-  }).toString();
-
   const response = await fetch(
     `${
       process.env.DATABASE_URL! +
       "photos/" +
-      searchParams +
+      id +
       "?client_id=" +
       process.env.ACCESS_KEY
     }`

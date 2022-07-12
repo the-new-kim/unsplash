@@ -23,7 +23,7 @@ grid grid-cols-1 gap-6 h-fit
 
 interface PhotosProps {
   photos: PhotoData[];
-  setPage: Dispatch<SetStateAction<number>>;
+  setPage?: Dispatch<SetStateAction<number>>;
 }
 
 export default function Photos({ photos, setPage }: PhotosProps) {
@@ -33,7 +33,7 @@ export default function Photos({ photos, setPage }: PhotosProps) {
   const observer = useRef<IntersectionObserver>();
 
   const lastPhotoElement = useCallback((node: HTMLDivElement) => {
-    if (!node) return;
+    if (!node || !setPage) return;
     if (observer.current) observer.current.disconnect();
     observer.current = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) setPage((prev) => prev + 1);

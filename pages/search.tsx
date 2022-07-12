@@ -2,13 +2,14 @@ import type { NextPage } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import Banner from "../components/banner";
 import Detail from "../components/detail";
 import Photos from "../components/photos";
 import { ListResult, PhotoData } from "./api/photos/list";
 
-const Home: NextPage = () => {
+const Search: NextPage = () => {
   const router = useRouter();
+  const { keyword } = router.query;
+
   const [photos, setPhotos] = useState<PhotoData[]>([]);
   const [page, setPage] = useState(1);
   const [listData, setListData] = useState<ListResult>({
@@ -19,7 +20,9 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     (async () => {
-      const res = await fetch(`/api/photos/list?page=${page}`);
+      const res = await fetch(
+        `/api/photos/search?query=${keyword}&page=${page}`
+      );
       const data: ListResult = await res.json();
       setListData(data);
 
@@ -27,7 +30,7 @@ const Home: NextPage = () => {
         return [...prev, ...data.results];
       });
     })();
-  }, [page]);
+  }, [page, keyword]);
 
   const closeModal = () => {
     router.push(`${router.pathname}`, `${router.pathname}`, {
@@ -37,7 +40,10 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <Banner />
+      <div className="px-3 w-full flex justify-start items-center my-4">
+        <h1 className="text-4xl font-bold">{router.query.keyword}</h1>
+      </div>
+
       {listData.isLoading ? (
         "loading"
       ) : listData.error ? (
@@ -63,4 +69,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default Search;

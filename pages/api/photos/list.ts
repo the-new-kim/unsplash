@@ -90,11 +90,7 @@ export default async function handler(
 ) {
   const { page } = req.query;
 
-  // console.log(page?.toString());
-
   const searchParams = new URLSearchParams({ page: `${page}` }).toString();
-
-  // console.log(searchParams.toString());
 
   const response = await fetch(
     `${

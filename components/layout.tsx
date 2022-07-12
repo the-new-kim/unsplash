@@ -6,7 +6,7 @@ export default function Layout({ children }: PropsWithChildren) {
   return (
     <>
       <Head>
-        <title>Search Images</title>
+        <title>Unsplash Clone</title>
         <meta name="description" content="Portfolio" />
       </Head>
       <NavBar />

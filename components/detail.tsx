@@ -1,34 +1,108 @@
-import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { DetailData, DetailResult } from "../pages/api/photos/detail";
+import tw from "tailwind-styled-components";
+import Link from "next/link";
+import Image from "next/image";
 
-interface DetailProps {
-  photoId: string;
-}
+const Btn = tw.button`
+bg-[#FFFFFF]
+h-8
+px-3
+rounded-md
+text-[#767676]
 
-export default function Detail({ photoId }: DetailProps) {
+hover:text-black
+duration-300
+
+pointer-events-auto
+border-gray-300
+border-solid
+border-[1px]
+min-w-[40px]
+`;
+
+const MobileInfo = tw.div`
+ text-black flex justify-start items-center p-3
+`;
+
+export default function Detail() {
   const router = useRouter();
+  const { photoId } = router.query;
+  const [photo, setPhoto] = useState<DetailData>();
 
-  const closeModal = () => {
-    router.push(`${router.pathname}`, `${router.pathname}`, {
-      scroll: false,
-    });
-  };
+  useEffect(() => {
+    (async () => {
+      const res = await fetch(`/api/photos/detail?id=${photoId}`);
+      const data: DetailResult = await res.json();
+
+      if (!data.results || data.error || data.isLoading || data.results.errors)
+        return;
+
+      setPhoto(data.results);
+    })();
+  }, [photoId]);
 
   return (
     <>
-      <button onClick={closeModal} className="fixed top-0 left-0 p-3 z-50">
-        <Image src="/close.svg" width={25} height={25} />
-      </button>
-
-      <div className="fixed top-3 left-0 right-0 m-auto w-3/4 h-screen bg-white rounded-md z-50">
-        {photoId}
-      </div>
-
-      <div
-        onClick={closeModal}
-        className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-40"
-      ></div>
+      {photo && (
+        <div className="w-full flex flex-col justify-center items-center p-4 [&>*]:w-full [&>*]:flex [&>*]:items-center [&>*]:mb-4 text-sm">
+          <header className="justify-between">
+            <div className="flex justify-start items-center">
+              <span className="pr-2 cursor-pointer pointer-events-auto">
+                <img
+                  className="rounded-full"
+                  src={photo.user.profile_image.small}
+                />
+              </span>
+              <span className="cursor-pointer pointer-events-auto text-base">
+                {photo.user.name}
+              </span>
+            </div>
+            <div className="flex justify-end items-center [&>*]:ml-2">
+              <Btn>♥</Btn>
+              <Btn>+</Btn>
+              <Btn>
+                <Link href={photo.links.download}>
+                  <a>Download</a>
+                </Link>
+              </Btn>
+            </div>
+          </header>
+          <div className="justify-center h-[80vh]">
+            <img
+              className="max-h-full max-w-fu object-cover"
+              src={photo.urls.regular}
+            />
+          </div>
+          <div className="justify-between">
+            <div className="flex justify-start items-center [&>*]:mr-5">
+              <span>
+                <div className="text-[#767676]">Views</div>
+                <div>{photo.views.toLocaleString()}</div>
+              </span>
+              <span>
+                <div className="text-[#767676]">Downloads</div>
+                <div>{photo.downloads.toLocaleString()}</div>
+              </span>
+            </div>
+            <div className="flex justify-end items-center [&>*]:ml-2">
+              <Btn>Share</Btn>
+              <Btn>Info</Btn>
+              <Btn>...</Btn>
+            </div>
+          </div>
+          <div className="text-[#767676]">
+            <div className="flex justify-start items-center [&>*]:mr-2">
+              <span className="flex justify-start items-center">
+                <Image src="/camera.svg" width={15} height={15}></Image>
+              </span>
+              <span>{photo.exif.make + " " + photo.exif.model}</span>
+            </div>
+          </div>
+          <div>{/* <img/> */}</div>
+        </div>
+      )}
     </>
   );
 }
