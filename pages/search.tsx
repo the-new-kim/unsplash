@@ -38,8 +38,6 @@ const Search: NextPage = () => {
     });
   };
 
-  console.log(keyword);
-
   return (
     <>
       <div className="px-3 w-full flex justify-center items-center my-4">
