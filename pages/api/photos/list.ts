@@ -40,7 +40,7 @@ interface UserLinks {
   self: string;
 }
 
-interface UserData {
+export interface UserData {
   accepted_tos: boolean;
   bio: string;
   first_name: string;

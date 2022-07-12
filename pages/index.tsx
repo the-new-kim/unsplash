@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Banner from "../components/banner";
+import Loader from "../components/loader";
 import Modal from "../components/modal";
 import Photos from "../components/photos";
 import { ListResult, PhotoData } from "./api/photos/list";
@@ -32,9 +33,9 @@ const Home: NextPage = () => {
     <>
       <Banner />
       {listData.isLoading ? (
-        "loading"
+        <Loader text="Loading..." />
       ) : listData.error ? (
-        "error"
+        <Loader text="Error" />
       ) : (
         <Photos photos={photos} setPage={setPage} />
       )}
