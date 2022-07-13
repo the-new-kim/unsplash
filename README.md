@@ -1,17 +1,19 @@
 # Unsplash Clone
 
-list and search images using unsplash api.
+a Unsplash clone using Next.js + Unsplash api.
 
-- responsive design
+## Features
+
+- search and list photos
+- fully responsive
 - infinite scroll
-- list photos
-- search photos
-- detail modal
-- list related photos
 
 ## Liberies used
 
-- `tailwind css`
-- `react hook form`
+- `react-hook-form`
+- `styled-components`
+- `tailwind-styled-components`
 
-[link](https://unsplash-mu.vercel.app/)
+## Page Link
+
+[Link](https://unsplash-mu.vercel.app/)
